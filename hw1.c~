@@ -1,0 +1,21 @@
+
+
+#include <inttypes.h>
+#include <avr/io.h>
+
+void delay (unsigned int dly){
+	int i;
+	for(i = dly; i != 0; i--)
+}
+
+int main(void){
+	uint8_t count;
+	DDRB = 0xff;
+	while(1){
+		for(count = 0; count <= 0xff; count++){
+			PORTB = ~count;
+			delay(65000U);
+		}
+	}
+	return(0);
+}
