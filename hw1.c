@@ -17,7 +17,7 @@ int main(void){
 	uint8_t notOn = 0xff;
 	uint8_t isOn = 0x00;
 	unsigned int dly = 1000U;
-	unsigned int adjust = 500U;
+	unsigned int adjust = 0U;
 	uint8_t i;
 	DDRB = 0xff;  /* enable port B for output */
 	DDRD = 0x00;  /* enable port D for input */
@@ -30,7 +30,7 @@ int main(void){
 			delay(65000U);
 			PORTB = isOn;
 			for(i = count; i != 0; i--){
-				delay(dly);
+				delay(dly + adjust);
 			}
 			PORTB = notOn;
 		}
