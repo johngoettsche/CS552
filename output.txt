@@ -6,7 +6,7 @@ Configured with: ../src/configure -v --enable-languages=c,c++ --prefix=/usr/lib 
 Thread model: single
 gcc version 4.8.2 (GCC) 
 COLLECT_GCC_OPTIONS='-v' '-o' 'hw1' '-mmcu=atmega32'
- /usr/lib/gcc/avr/4.8.2/cc1 -quiet -v -imultilib avr5 hw1.c -quiet -dumpbase hw1.c -mmcu=atmega32 -auxbase hw1 -version -o /tmp/ccbjS85j.s
+ /usr/lib/gcc/avr/4.8.2/cc1 -quiet -v -imultilib avr5 hw1.c -quiet -dumpbase hw1.c -mmcu=atmega32 -auxbase hw1 -version -o /tmp/cc747cy9.s
 GNU C (GCC) version 4.8.2 (avr)
 	compiled by GNU C version 4.8.2, GMP version 5.1.3, MPFR version 3.1.2-p3, MPC version 1.0.1
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -22,13 +22,11 @@ GNU C (GCC) version 4.8.2 (avr)
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 8e3cc840c82408aea3cf73bdb00a046d
 COLLECT_GCC_OPTIONS='-v' '-o' 'hw1' '-mmcu=atmega32'
- /usr/lib/gcc/avr/4.8.2/../../../avr/bin/as -mmcu=avr5 -mno-skip-bug -o /tmp/cc8Td4w4.o /tmp/ccbjS85j.s
+ /usr/lib/gcc/avr/4.8.2/../../../avr/bin/as -mmcu=avr5 -mno-skip-bug -o /tmp/ccYBHMYi.o /tmp/cc747cy9.s
 COMPILER_PATH=/usr/lib/gcc/avr/4.8.2/:/usr/lib/gcc/avr/4.8.2/:/usr/lib/gcc/avr/:/usr/lib/gcc/avr/4.8.2/:/usr/lib/gcc/avr/:/usr/lib/gcc/avr/4.8.2/../../../avr/bin/
 LIBRARY_PATH=/usr/lib/gcc/avr/4.8.2/avr5/:/usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr5/:/usr/lib/gcc/avr/4.8.2/:/usr/lib/gcc/avr/4.8.2/../../../avr/lib/
 COLLECT_GCC_OPTIONS='-v' '-o' 'hw1' '-mmcu=atmega32'
- /usr/lib/gcc/avr/4.8.2/collect2 -m avr5 -o hw1 /usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr5/crtm32.o -L/usr/lib/gcc/avr/4.8.2/avr5 -L/usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr5 -L/usr/lib/gcc/avr/4.8.2 -L/usr/lib/gcc/avr/4.8.2/../../../avr/lib /tmp/cc8Td4w4.o --start-group -lgcc -lm -lc --end-group
-Compilation Successful
-copy from `hw1' [elf32-little] to `hw1.hex' [ihex]
+ /usr/lib/gcc/avr/4.8.2/collect2 -m avr5 -o hw1 /usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr5/crtm32.o -L/usr/lib/gcc/avr/4.8.2/avr5 -L/usr/lib/gcc/avr/4.8.2/../../../avr/lib/avr5 -L/usr/lib/gcc/avr/4.8.2 -L/usr/lib/gcc/avr/4.8.2/../../../avr/lib /tmp/ccYBHMYi.o --start-group -lgcc -lm -lc --end-group
 avrdude: erase cycle counter no longer supported
 
 avrdude: Version 6.0.1, compiled on Oct 21 2013 at 15:55:32
@@ -41,7 +39,50 @@ avrdude: Version 6.0.1, compiled on Oct 21 2013 at 15:55:32
 
          Using Port                    : /dev/ttyS0
          Using Programmer              : stk500v2
-avrdude: ser_open(): can't open device "/dev/ttyS0": Permission denied
+         AVR Part                      : ATmega32
+         Chip Erase delay              : 9000 us
+         PAGEL                         : PD7
+         BS2                           : PA0
+         RESET disposition             : dedicated
+         RETRY pulse                   : SCK
+         serial program mode           : yes
+         parallel program mode         : yes
+         Timeout                       : 200
+         StabDelay                     : 100
+         CmdexeDelay                   : 25
+         SyncLoops                     : 32
+         ByteDelay                     : 0
+         PollIndex                     : 3
+         PollValue                     : 0x53
+         Memory Detail                 :
+
+                                  Block Poll               Page                       Polled
+           Memory Type Mode Delay Size  Indx Paged  Size   Size #Pages MinW  MaxW   ReadBack
+           ----------- ---- ----- ----- ---- ------ ------ ---- ------ ----- ----- ---------
+           eeprom         4    10    64    0 no       1024    4      0  9000  9000 0xff 0xff
+           flash         33     6    64    0 yes     32768  128    256  4500  4500 0xff 0xff
+           lfuse          0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           hfuse          0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           lock           0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           signature      0     0     0    0 no          3    0      0     0     0 0x00 0x00
+           calibration    0     0     0    0 no          4    0      0     0     0 0x00 0x00
+
+         Programmer Type : STK500V2
+         Description     : Atmel STK500 Version 2.x firmware
+         Programmer Model: STK500
+         Hardware Version: 2
+         Firmware Version Master : 2.01
+         Topcard         : Unknown
+         Vtarget         : 4.9 V
+         SCK period      : 35.3 us
+         Varef           : 5.0 V
+         Oscillator      : 3.686 MHz
+
+avrdude: stk500v2_command(): command failed
+avrdude: initialization failed, rc=-1
+         Double check connections and try again, or use -F to override
+         this check.
+
 
 avrdude done.  Thank you.
 
@@ -57,7 +98,50 @@ avrdude: Version 6.0.1, compiled on Oct 21 2013 at 15:55:32
 
          Using Port                    : /dev/ttyS0
          Using Programmer              : stk500v2
-avrdude: ser_open(): can't open device "/dev/ttyS0": Permission denied
+         AVR Part                      : ATmega32
+         Chip Erase delay              : 9000 us
+         PAGEL                         : PD7
+         BS2                           : PA0
+         RESET disposition             : dedicated
+         RETRY pulse                   : SCK
+         serial program mode           : yes
+         parallel program mode         : yes
+         Timeout                       : 200
+         StabDelay                     : 100
+         CmdexeDelay                   : 25
+         SyncLoops                     : 32
+         ByteDelay                     : 0
+         PollIndex                     : 3
+         PollValue                     : 0x53
+         Memory Detail                 :
+
+                                  Block Poll               Page                       Polled
+           Memory Type Mode Delay Size  Indx Paged  Size   Size #Pages MinW  MaxW   ReadBack
+           ----------- ---- ----- ----- ---- ------ ------ ---- ------ ----- ----- ---------
+           eeprom         4    10    64    0 no       1024    4      0  9000  9000 0xff 0xff
+           flash         33     6    64    0 yes     32768  128    256  4500  4500 0xff 0xff
+           lfuse          0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           hfuse          0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           lock           0     0     0    0 no          1    0      0  2000  2000 0x00 0x00
+           signature      0     0     0    0 no          3    0      0     0     0 0x00 0x00
+           calibration    0     0     0    0 no          4    0      0     0     0 0x00 0x00
+
+         Programmer Type : STK500V2
+         Description     : Atmel STK500 Version 2.x firmware
+         Programmer Model: STK500
+         Hardware Version: 2
+         Firmware Version Master : 2.01
+         Topcard         : Unknown
+         Vtarget         : 4.9 V
+         SCK period      : 35.3 us
+         Varef           : 5.0 V
+         Oscillator      : 3.686 MHz
+
+avrdude: stk500v2_command(): command failed
+avrdude: initialization failed, rc=-1
+         Double check connections and try again, or use -F to override
+         this check.
+
 
 avrdude done.  Thank you.
 
