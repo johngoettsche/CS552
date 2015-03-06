@@ -2,6 +2,7 @@
  * John Goettsche
  * CS 552
  * hw3.c
+ * size: 782
  */
 
 #include <inttypes.h>
@@ -13,7 +14,7 @@ uint8_t isOn = 0x00;
 uint8_t setOn = 0x0f;
 uint8_t setOff = 0x00;
 uint8_t pressSet;
-uint8_t second = 2;    		// one second
+uint8_t second = 4;    		// one second
 uint8_t clk = 0;		// clock timer
 unsigned int timer = 0U;	// keeps track of how long button was pressed
 unsigned int count = 0U;
@@ -45,12 +46,13 @@ void delay (unsigned int timeDly){
 
 void working(){
 	PORTB = isOn; /* to show that the system is on */
-	delay(2);
+	delay(second / 2);
 	PORTB = notOn; /* turn off LEDs */
-	delay(1);
+	delay(second / 4);
 	PORTB = isOn; /* to show that the system is on */
-	delay(2);
+	delay(second / 2);
 	PORTB = notOn; /* turn off LEDs */
+	delay(second);
 }
 
 int monitor (){

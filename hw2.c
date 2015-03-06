@@ -2,6 +2,7 @@
  * John Goettsche
  * CS 552
  * hw2.c
+ * program size: 535
  */
 
 #include <inttypes.h>
@@ -11,7 +12,7 @@
 uint8_t notOn = 0xff;
 uint8_t isOn = 0x00;
 uint8_t count = 0;
-uint8_t second = 6;
+uint8_t second = 4;
 
 void init(){
 	DDRB = 0xFF;			//Set Port B as Output
@@ -34,12 +35,13 @@ void delay (uint8_t timeDly){
 
 void working(){
 	PORTB = isOn; /* to show that the system is on */
-	delay(second / 3);
+	delay(second / 2);
 	PORTB = notOn; /* turn off LEDs */
-	delay(second / 6);
+	delay(second / 4);
 	PORTB = isOn; /* to show that the system is on */
-	delay(second / 3);
+	delay(second / 2);
 	PORTB = notOn; /* turn off LEDs */
+	delay(second);
 }
 
 int monitor (){
