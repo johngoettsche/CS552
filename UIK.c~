@@ -1,0 +1,223 @@
+/*
+ * John Goettsche
+ * CS 552
+ * UIK.c
+ * size: 
+ */
+
+#include "stdlib.h"
+#include "stddef.h"
+#include <inttypes.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+#define BLOCKED 1
+#define READY 2
+#define RUNNING 3
+#define UNINITIALIZED 4
+
+//structs
+typedef union arg{
+	char *str;
+	int i;
+}arg;
+
+typedef struct list{
+	int size;
+	struct task *head;
+	struct task *tail;
+}list;
+
+typedef struct task{
+	struct task *next;
+	struct task *prev;
+	void *funcPtr;
+	int status;
+	uint8_t priority;
+	int nargs;
+	arg args[1];
+}task;
+
+ISR(TIMER0_OVF_vect);
+void Initialize(uint16_t ticklen, uint8_t MaxTasks);
+void createReadyQueue();
+void addToQueue(list *q, task *newTask);
+task *FrontOfQueue();
+void popQueue();
+void Scheduler();
+void Run(task t);
+void AddTask(void(* functionPtr)(void), uint8_t priority, int nargs);
+void delay(unsigned int thisDly);
+void TaskBlinkyLights();
+int main();
+
+//Globals
+//uint8_t TICK_LEN = 1000;
+uint8_t notOn = 0xff;
+uint8_t isOn = 0x00;
+uint8_t allOut = 0xff;
+list *ReadyQueue;
+long TickNum = 0;
+int semiphore = 1;
+
+task *display;
+task *blinkyLights;
+
+//Clock Interupt
+ISR(TIMER0_OVF_vect){
+	TickNum++;
+	Scheduler();
+}
+
+//Initialization of system
+void Initialize(uint16_t ticklen, uint8_t MaxTasks){
+	DDRB = 0xff;				//Set Port B as Output
+	DDRC = 0x00;  				//Set Port C as Input
+	DDRA = allOut;	 			//Set Port A as Output to LCD Control
+	DDRD = allOut;	 			//Set Port D as Output to LCD Display
+	//TCCR0 = (1<<CS02)|(1<<CS00);		//Timer clock = Sysclk/1024
+	TCCR0 = (0<<CS02)|0<<CS01|(1<<CS00);	//clock 1 ms click
+	TIFR = 1<<TOV0;				//Clear TOV0, any pending interupts
+	TIMSK = 1<<TOIE0;			//Enable Timer0 Overflow interrupt
+
+	//LCD Display
+	writeInst(0x38);			//Function Set
+	writeInst(0x0f);			//Turn on display
+	writeInst(0x01);			//Clear display
+	writeInst(0x02);			//Carage Return
+
+	createReadyQueue();
+	display = AddTask(&Display, 1, 1);
+	blinkyLights = AddTask(&TaskBlinkyLights, 9, 0);	
+}
+
+//Queue Procedures
+void createReadyQueue(){
+	ReadyQueue = (list*)calloc(1, sizeof(list));
+	ReadyQueue->size = 0;
+}
+
+void addToQueue(list *q, task *newTask){
+	newTask->next = NULL;
+	newTask->prev = NULL;
+	newTask->status = READY;
+	if (q->size == 0){
+		q->head = newTask;
+		q->tail = newTask;
+		q->size++;
+	} else {
+		task *current = q->tail;
+		int place = 0;
+		while (current != NULL && place == 0){
+			if(newTask->priority < current->priority){
+				current = current->prev;			
+			} else {
+				newTask->prev = current;
+				newTask->next = current->next;
+				current->next = newTask;
+				q->size++;
+				place = 1;
+			}
+		}
+	}
+}
+
+task *FrontOfQueue(list *q){
+	return q->head;
+}
+
+void popQueue(list *q){
+	if(q->head != NULL) q->head = q->head->next;
+}
+
+//Sheduler
+void Scheduler(){
+	task *current = ReadyQueue->head;
+	while(current != NULL){
+		if(current->status == RUNNING || current->status == BLOCKED /*|| current->status == READY*/){
+			Run(current);
+		}
+		current = current->next;
+	}
+}
+
+void Run(task t){
+	if(semiphore){
+		semiphore--;
+		t->funcPtr();
+		semiphore++;
+	} else {
+		t->status = BLOCKED;
+	}
+}
+
+task *AddTask(void(* functionPtr)(void), uint8_t priority, int nargs){
+	task *newTask = (task *)calloc(1, sizeof(task));
+	newTask->next = NULL;
+	newTask->prev = NULL;
+	newTask->funcPtr = functionPtr;
+	newTask->status = UNINITIALIZED;
+	newTask->priority = priority;
+	newTask->nargs = nargs;
+	addToQueue(ReadyQueue, newTask);
+	return newTask
+}
+
+//LCD functions
+void msDelay(unsigned int thisDly){
+	TCNT0 = 0;
+	while(TCNT0 < thisDly);
+}
+
+void writeInst(uint8_t inst){
+	//checkBusyFlag();
+	PORTA = 0x00;
+	msDelay(1U);
+	PORTA = 0x01;
+	msDelay(1U);
+	PORTD = inst;
+	msDelay(1U);
+	PORTA = 0x00;
+	msDelay(100U);	
+}
+
+void writeData(char data){
+	//checkBusyFlag();
+	PORTA = 0x02;
+	msDelay(1U);
+	PORTA = 0x03;
+	msDelay(1U);
+	PORTD = data;
+	msDelay(1U);
+	PORTA = 0x02;
+	msDelay(100U);	
+}
+
+//Tasks
+void Display(char *str){
+	writeInst(0x80); 		//set DD RAM first line first cell
+	for(c = 0; c < len(str); c++)
+		writeData(str[c]);
+}
+
+void delay(unsigned int thisDly){
+	TCNT0 = 0;
+	while(TCNT0 < thisDly);
+}
+
+void TaskBlinkyLights(){
+	PORTB = isOn;
+	delay(40000U);
+	PORTB = notOn;
+	delay(40000U);
+}
+
+
+
+int main(){
+	Initialize(10U, 1);
+	display->funcPtr("Ready");
+	return 0;
+}
+
+
